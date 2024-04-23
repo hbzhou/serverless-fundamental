@@ -34,7 +34,7 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>jsrc/main/java</sourceDirectory>
+        <sourceDirectory>${src.dir}</sourceDirectory>
         <resources>
             <resource>
                 <directory>${resources.dir}</directory>
