@@ -14,28 +14,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 @LambdaHandler(lambdaName = "hello_world",
-	roleName = "hello_world-role",
-	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
+        roleName = "hello_world-role",
+        logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
 @LambdaUrlConfig(
-		authType = AuthType.NONE,
-		invokeMode = InvokeMode.BUFFERED
+        authType = AuthType.NONE,
+        invokeMode = InvokeMode.BUFFERED
 )
 public class HelloWorld implements RequestHandler<Map<String, Object>, Map<String, Object>> {
 
-	public Map<String, Object> handleRequest(Map<String, Object> request, Context context) {
-		if (request.get("rawPath").equals("/hello")){
-			System.out.println("Hello from lambda");
-			Map<String, Object> resultMap = new HashMap<>();
-			Map<String, Object> body = Map.of("statusCode", 200, "message", "Hello from Lambda");
-			try {
-				resultMap.put("body", new ObjectMapper().writeValueAsString(body));
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException(e);
-			}
-			resultMap.put("statusCode", 200);
-			return resultMap;
-		}
-		return Map.of("statusCode", 404);
-	}
+    public Map<String, Object> handleRequest(Map<String, Object> request, Context context) {
+        System.out.println("Hello from lambda");
+        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> body = Map.of("statusCode", 200, "message", "Hello from Lambda");
+        try {
+            resultMap.put("body", new ObjectMapper().writeValueAsString(body));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        resultMap.put("statusCode", 200);
+        resultMap.put("message", "Hello from Lambda");
+        return resultMap;
+    }
 }
