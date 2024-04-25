@@ -13,7 +13,7 @@ import com.syndicate.deployment.model.lambda.url.InvokeMode;
 import java.util.HashMap;
 import java.util.Map;
 
-@LambdaHandler(lambdaName = "hello_world",
+@LambdaHandler(lambdaName = "task02",
 	roleName = "hello_world-role",
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
