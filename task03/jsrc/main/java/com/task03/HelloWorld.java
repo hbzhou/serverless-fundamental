@@ -1,9 +1,7 @@
-package com.helloworld;
+package com.task03;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.model.RetentionSetting;
 
@@ -18,7 +16,7 @@ public class HelloWorld implements RequestHandler<Object, Map<String, Object>> {
 
 	public Map<String, Object> handleRequest(Object request, Context context) {
 		System.out.println("Hello from lambda");
-		Map<String, Object> resultMap = new HashMap<>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("statusCode", 200);
 		resultMap.put("message", "Hello from Lambda");
 		return resultMap;
