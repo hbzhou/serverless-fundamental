@@ -19,12 +19,6 @@ public class HelloWorld implements RequestHandler<Object, Map<String, Object>> {
 	public Map<String, Object> handleRequest(Object request, Context context) {
 		System.out.println("Hello from lambda");
 		Map<String, Object> resultMap = new HashMap<>();
-		Map<String, Object> body = Map.of("statusCode", 200, "message", "Hello from Lambda");
-		try {
-			resultMap.put("body", new ObjectMapper().writeValueAsString(body));
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
 		resultMap.put("statusCode", 200);
 		resultMap.put("message", "Hello from Lambda");
 		return resultMap;
