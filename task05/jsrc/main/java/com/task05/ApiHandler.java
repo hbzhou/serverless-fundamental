@@ -1,6 +1,5 @@
 package com.task05;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
@@ -22,9 +21,7 @@ import java.util.UUID;
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
 public class ApiHandler implements RequestHandler<APIGatewayV2ProxyRequestEvent, Map<String, Object>> {
-
 	private static final String TABLE_NAME = "Events";
-	private final AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder.standard().build();
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	public Map<String, Object> handleRequest(APIGatewayV2ProxyRequestEvent request, Context context) {
@@ -40,7 +37,7 @@ public class ApiHandler implements RequestHandler<APIGatewayV2ProxyRequestEvent,
 					"createdAt", new AttributeValue(String.valueOf(LocalDateTime.now()))
 					)
 			);
-			PutItemResult putItemResult = amazonDynamoDB.putItem(putItemRequest);
+			PutItemResult putItemResult = AmazonDynamoDBClientBuilder.defaultClient().putItem(putItemRequest);
 			return Map.of("statusCode", 201, "event", putItemResult.getAttributes());
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
