@@ -13,6 +13,7 @@ import com.google.gson.GsonBuilder;
 import com.syndicate.deployment.annotations.events.RuleEventSource;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.model.RetentionSetting;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -48,15 +49,9 @@ public class UuidGenerator implements RequestHandler<Object, Map<String, Object>
                 .collect(Collectors.toList());
         try {
             String json = new Gson().toJson(Map.of("ids", ids));
-            try (FileWriter file = new FileWriter(filename)) {
-                file.write(json);
-                System.out.println("Successfully Copied JSON Object to File...");
-                System.out.println("\nJSON Object: " + json);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            byte[] data = StringEscapeUtils.escapeJava(json).getBytes();
             final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(REGION).build();
-            s3.putObject(BUCKET_NAME, filename, new File(filename));
+            s3.putObject(BUCKET_NAME, filename, new ByteArrayInputStream(data), new ObjectMetadata());
         } catch (Exception e) {
             System.err.println(e.getMessage());
             System.exit(1);
