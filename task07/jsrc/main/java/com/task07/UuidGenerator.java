@@ -15,6 +15,7 @@ import com.syndicate.deployment.model.RetentionSetting;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ public class UuidGenerator implements RequestHandler<Object, Map<String, Object>
 
     public Map<String, Object> handleRequest(Object request, Context context) {
         System.out.println("Hello from UuidGenerator lambda");
-        String filename = LocalDateTime.now().format(DateTimeFormatter.ISO_INSTANT);
+        String filename = DateTimeFormatter.ISO_INSTANT.format(LocalDateTime.now().atZone(ZoneId.systemDefault()));
         List<String> ids = IntStream.range(1, 10)
                 .mapToObj(i -> UUID.randomUUID().toString())
                 .collect(Collectors.toList());
