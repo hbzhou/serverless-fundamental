@@ -2,6 +2,7 @@ package com.task07;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.syndicate.deployment.annotations.events.RuleEventSource;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
@@ -39,11 +40,10 @@ public class UuidGenerator implements RequestHandler<Object, Map<String, Object>
                 .collect(Collectors.toList());
         try {
             try (S3Client s3Client = S3Client.builder().region(Region.EU_CENTRAL_1).build()) {
-                String json = new Gson().toJson(Map.of("ids", ids));
                 s3Client.putObject(PutObjectRequest.builder()
                         .bucket(BUCKET_NAME)
                         .key(filename)
-                        .build(), RequestBody.fromString(json));
+                        .build(), RequestBody.fromBytes(new ObjectMapper().writeValueAsBytes(Map.of("ids", ids))));
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
