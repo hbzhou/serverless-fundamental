@@ -56,8 +56,8 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Map<String, 
             }
             if ("MODIFY".equals(record.getEventName())) {
                 item.withString("updatedAttribute", "value");
-                item.with("oldValue", streamRecord.getOldImage().get("value").getN());
-                item.with("newValue", streamRecord.getNewImage().get("value").getN());
+                item.with("oldValue", Integer.valueOf(streamRecord.getOldImage().get("value").getN()));
+                item.with("newValue", Integer.valueOf(streamRecord.getNewImage().get("value").getN()));
             }
             dynamoDB.getTable(TABLE_NAME).putItem(item);
         }
