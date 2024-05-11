@@ -14,6 +14,10 @@ import com.syndicate.deployment.annotations.events.RuleEventSource;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.model.RetentionSetting;
 import org.apache.commons.lang3.StringEscapeUtils;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -48,10 +52,13 @@ public class UuidGenerator implements RequestHandler<Object, Map<String, Object>
                 .mapToObj(i -> UUID.randomUUID().toString())
                 .collect(Collectors.toList());
         try {
-            String json = new Gson().toJson(Map.of("ids", ids));
-            byte[] data = StringEscapeUtils.escapeJava(json).getBytes();
-            final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(REGION).build();
-            s3.putObject(BUCKET_NAME, filename, new ByteArrayInputStream(data), new ObjectMetadata());
+            try (S3Client s3Client = S3Client.builder().region(Region.EU_CENTRAL_1).build()) {
+                String json = new Gson().toJson(Map.of("ids", ids));
+                s3Client.putObject(PutObjectRequest.builder()
+                        .bucket(BUCKET_NAME)
+                        .key(filename)
+                        .build(), RequestBody.fromString(json));
+            }
         } catch (Exception e) {
             System.err.println(e.getMessage());
             System.exit(1);
