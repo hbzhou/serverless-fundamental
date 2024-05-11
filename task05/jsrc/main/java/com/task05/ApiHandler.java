@@ -21,29 +21,23 @@ import java.util.UUID;
         roleName = "api_handler-role",
         logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
-public class ApiHandler implements RequestHandler<Map<String, Object>, Map<String, Object>> {
+public class ApiHandler implements RequestHandler<ApiRequst, Map<String, Object>> {
     private static final String TABLE_NAME = "cmtr-8517cab4-Events-test";
     private static final String REGION = "eu-central-1";
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Map<String, Object> handleRequest(Map<String, Object> request, Context context) {
-        try {
-            ApiRequestBody apiRequestBody = objectMapper.readValue(objectMapper.writeValueAsString(request), ApiRequestBody.class);
-            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
-                    .withRegion(REGION)
-                    .build();
-            DynamoDB dynamoDB = new DynamoDB(client);
+    public Map<String, Object> handleRequest(ApiRequst request, Context context) {
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
+                .withRegion(REGION)
+                .build();
+        DynamoDB dynamoDB = new DynamoDB(client);
 
-            Item item = new Item()
-                    .withPrimaryKey("id", UUID.randomUUID().toString())
-                    .withNumber("principalId", apiRequestBody.getPrincipalId())
-                    .withString("createdAt", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
-                    .withMap("body", apiRequestBody.getContent());
+        Item item = new Item()
+                .withPrimaryKey("id", UUID.randomUUID().toString())
+                .withNumber("principalId", request.getPrincipalId())
+                .withString("createdAt", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                .withMap("body", request.getContent());
 
-            PutItemOutcome putItemOutcome = dynamoDB.getTable(TABLE_NAME).putItem(item);
-            return Map.of("statusCode", 201, "event", putItemOutcome);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        PutItemOutcome putItemOutcome = dynamoDB.getTable(TABLE_NAME).putItem(item);
+        return Map.of("statusCode", 201, "event", putItemOutcome);
     }
 }

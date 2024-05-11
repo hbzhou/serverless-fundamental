@@ -2,7 +2,7 @@ package com.task05;
 
 import java.util.Map;
 
-public class ApiRequestBody {
+public class ApiRequst {
 
     private int principalId;
     private Map<String,String> content;
