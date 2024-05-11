@@ -50,7 +50,7 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Map<String, 
                 HashMap<String, Object> newValue = new HashMap<>();
                 newValue.put("key", newImage.get("key").getS());
                 if (newImage.containsKey("value")) {
-                    newValue.put("value", newImage.get("value").getN());
+                    newValue.put("value", Integer.valueOf(newImage.get("value").getN()));
                 }
                 item.withMap("newValue", newValue);
             }
