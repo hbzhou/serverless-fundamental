@@ -8,12 +8,14 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.syndicate.deployment.annotations.events.RuleEventSource;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.model.RetentionSetting;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +44,7 @@ public class UuidGenerator implements RequestHandler<Object, Map<String, Object>
                 .mapToObj(i -> UUID.randomUUID().toString())
                 .collect(Collectors.toList());
         try {
-            byte[] bytes = new ObjectMapper().writeValueAsBytes(Map.of("ids", ids));
+            byte[] bytes = new Gson().toJson(Map.of("ids", ids)).getBytes(StandardCharsets.UTF_8);
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
             final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(REGION).build();
             s3.putObject(BUCKET_NAME, filename, inputStream, new ObjectMetadata());
