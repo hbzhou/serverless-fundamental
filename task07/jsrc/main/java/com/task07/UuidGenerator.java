@@ -43,7 +43,7 @@ public class UuidGenerator implements RequestHandler<Object, Map<String, Object>
                 s3Client.putObject(PutObjectRequest.builder()
                         .bucket(BUCKET_NAME)
                         .key(filename)
-                        .build(), RequestBody.fromBytes(new ObjectMapper().writeValueAsBytes(Map.of("ids", ids))));
+                        .build(), RequestBody.fromString(new ObjectMapper().writeValueAsString(Map.of("ids", ids))));
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
