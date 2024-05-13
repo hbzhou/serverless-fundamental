@@ -38,7 +38,7 @@ public class UuidGenerator implements RequestHandler<Object, Map<String, Object>
     public Map<String, Object> handleRequest(Object request, Context context) {
         System.out.println("Hello from UuidGenerator lambda");
         String filename = DateTimeFormatter.ISO_INSTANT.format(LocalDateTime.now().atZone(ZoneId.systemDefault()));
-        List<String> ids = IntStream.range(1, 10)
+        List<String> ids = IntStream.range(0, 10)
                 .mapToObj(i -> UUID.randomUUID().toString())
                 .collect(Collectors.toList());
 
