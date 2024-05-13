@@ -3,10 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.itsz</groupId>
+        <artifactId>serverless-fundamental</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
-    <groupId>task06-group</groupId>
     <artifactId>task06</artifactId>
-    <version>1.0.0</version>
 
     <properties>
         <maven-shade-plugin.version>3.5.2</maven-shade-plugin.version>
@@ -49,7 +52,7 @@
             <resource>
                 <directory>${resources.dir}</directory>
             </resource>
-        </resources>        
+        </resources>
         <plugins>
             <plugin>
                 <groupId>net.sf.aws-syndicate</groupId>
