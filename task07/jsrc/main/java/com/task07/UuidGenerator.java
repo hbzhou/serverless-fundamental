@@ -2,6 +2,8 @@ package com.task07;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.syndicate.deployment.annotations.events.RuleEventSource;
@@ -15,6 +17,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,13 +41,13 @@ public class UuidGenerator implements RequestHandler<Object, Map<String, Object>
         List<String> ids = IntStream.range(1, 10)
                 .mapToObj(i -> UUID.randomUUID().toString())
                 .collect(Collectors.toList());
+
+        Map<String, List<String>> data = new HashMap<>();
+        data.put("ids", ids);
+
         try {
-            try (S3Client s3Client = S3Client.builder().region(Region.EU_CENTRAL_1).build()) {
-                s3Client.putObject(PutObjectRequest.builder()
-                        .bucket(BUCKET_NAME)
-                        .key(filename)
-                        .build(), RequestBody.fromString(new ObjectMapper().writeValueAsString(Map.of("ids", ids))));
-            }
+            AmazonS3 s3Client = AmazonS3Client.builder().withRegion(REGION).build();
+            s3Client.putObject(BUCKET_NAME, filename, new ObjectMapper().writeValueAsString(data));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             System.exit(1);
